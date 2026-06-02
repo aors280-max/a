@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تسجيل مستخدم جديد - قبس الأمجاد</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+            --accent-color: #000000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .register-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .register-card h1 { font-size: 1.6rem; margin-bottom: 10px; font-weight: bold; }
+        .register-card p { color: gray; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .form-group { display: flex; flex-direction: column; text-align: right; margin-bottom: 15px; }
+        .form-group label { margin-bottom: 8px; font-size: 0.95rem; font-weight: bold; }
+        .form-control { padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; transition: 0.2s; font-size: 1rem; }
+        .form-control:focus { border-color: var(--accent-color); }
+
+        .btn-submit {
+            padding: 14px; background-color: var(--accent-color); color: #fff;
+            border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
+            font-size: 1rem; width: 100%; margin-top: 15px; transition: 0.3s;
+        }
+        .btn-submit:hover { opacity: 0.8; }
+
+        .back-link { display: block; margin-top: 20px; color: var(--accent-color); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <h1>إنشاء حساب جديد</h1>
+        <p>الرجاء تعبئة البيانات أدناه للوصول للنظام</p>
+        
+        <div class="form-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="reg-fullname" class="form-control" placeholder="مثال: أحمد محمد" required>
+        </div>
+        <div class="form-group">
+            <label>اسم المستخدم (للدخول)</label>
+            <input type="text" id="reg-username" class="form-control" placeholder="أدخل اسم مستخدم باللغة الإنجليزية" required>
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <div class="form-group">
+            <label>تأكيد كلمة المرور</label>
+            <input type="password" id="reg-confirm" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button class="btn-submit" onclick="registerUser()">تسجيل الحساب</button>
+        
+        <a href="index.html" class="back-link">العودة لصفحة تسجيل الدخول</a>
+    </div>
+
+    <script>
+        function registerUser() {
+            const fullName = document.getElementById('reg-fullname').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPass = document.getElementById('reg-confirm').value;
+
+            if(!fullName || !username || !password) {
+                return alert("يرجى تعبئة جميع الحقول.");
+            }
+
+            if(password !== confirmPass) {
+                return alert("كلمات المرور غير متطابقة!");
+            }
+
+            if(username.toLowerCase() === 'admin') {
+                return alert("اسم المستخدم هذا محجوز لمدير النظام.");
+            }
+
+            // جلب المستخدمين المسجلين مسبقاً من الذاكرة
+            let users = JSON.parse(localStorage.getItem('appUsers')) || [];
+
+            // التحقق من عدم تكرار اسم المستخدم
+            const userExists = users.some(u => u.username === username);
+            if(userExists) {
+                return alert("اسم المستخدم هذا موجود مسبقاً، يرجى اختيار اسم آخر.");
+            }
+
+            // حفظ المستخدم الجديد
+            users.push({ fullName, username, password });
+            localStorage.setItem('appUsers', JSON.stringify(users));
+
+            alert("تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.");
+            
+            // تحويل المستخدم إلى صفحة الدخول الأساسية (تأكد من اسم الملف)
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
